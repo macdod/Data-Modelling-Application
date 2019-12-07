@@ -1,0 +1,306 @@
+{% extends 'dash10/homebase.html' %}
+{% load staticfiles %}
+
+
+{% block username %}
+{{ username }}
+{% endblock %}
+
+{% block extstyle %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+
+{% block sidebar %}  
+<!---------------- MENU SIDEBAR------------------->
+
+<aside class="menu-sidebar d-none d-md-block " style="opacity: 1;width: 14%;z-index:500;background-color: #3B5998;">
+    <div class="logo  text-white" style="border-bottom : 1px solid #fff;opacity: 1;padding : 0px;background-color: #3B5998;">
+        <a href="/dash10/" class="col-md-7">
+            <h3 class="text-white col-md-8" style="padding-left: 0px;">DashDesk</h3>
+        </a>
+         <a href=""><i class="fas fa-long-arrow-alt-left col-md-2" style="font-size: 32px;padding-left: 0px;"></i></a>
+         <a href=""><i class="fas fa-long-arrow-alt-right col-md-2" style="font-size: 32px;"></i></a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1 " style="opacity: 1;border-right: 1px solid #fff;">
+        <div class="card" style="border : none;background-color: #3B5998;">
+            <div class="card-body  text-white" style="padding-top: 10px;">
+                <form action="" method="post" novalidate="novalidate">
+                    {% csrf_token %}
+                    <div class="row form-group" style="border-bottom : 1px solid #fff;padding-bottom: 10px;">
+                        <div class="col-md-4">
+                            <label for="select2" class=" form-control-label" style="font-size:14px;">Database</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="select" id="select2" class="form-control-sm  text-white" style="background-color: #3B5998;">
+                                <option value="1">DashDesk</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="row col-md-12">
+                            <label id="tablelabel" for="select1" class=" form-control-label col-md-12">Universe</label>
+                            <a href="/dash10/dbs/" id="resetbtn" class="btn  btn-block col-md-5" style="padding:0px;border-radius: 30px;height:30px;padding-top:2px;">Reset</a>
+                        </div>
+                        <nav class="navbar-sidebar" style="padding: 10px;padding-top: 20px;margin-bottom: 20px;">
+                            {% for t in tables %}
+                                <li id="liindbs{{t}}" class="has-sub" onclick="getcolumnsindbs('rep${{t}}')">
+                                    <a class="js-arrow" href="#">
+                                        <i class='fas fa-table' style='margin-right:5px;'></i>{{ t }}</a>
+                                    <ul id="ulindbsrep${{t}}" class="navbar-mobile-sub__list list-unstyled js-sub-list  text-white" style="background-color: #3B5998;">
+                                    </ul>
+                                </li>
+                            {% endfor %}
+                        </nav>
+                    </div>
+                    <nav class="navbar-sidebar" style="padding-top: 20px;margin-bottom: 20px;">
+                        <ul class="list-unstyled navbar__list" id="cities1">
+                        </ul>
+                    </nav>
+                </form>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+<!---------------------   END MENU SIDEBAR -------------->
+
+
+
+
+<!----------------------  BLOCK BODY --------------->
+{% block body %}
+<div class="container-fluid page-wrapper" style="height: 937px;overflow-y: hidden;position: relative;right:2%;"> 
+    <!-- MAIN CONTENT--> 
+    <div class="row pt-5 ml-3">
+      
+        <div style="display: inline-block;width: 100%;">
+
+            <div class="au-card recent-report col-lg-12 mb-3 mt-5  text-white" style="height: 870px;opacity: 1;margin: 0px;padding : 10px;border-right: 1px solid #fff;border-bottom: 1px solid #fff;padding-left: 0px;padding-right: 0px;">
+
+                <div class="table-data__tool pb-2 pl-1" style="border-bottom: 1px solid #3B5998;margin-bottom: 0px;">
+                    <div class="table-data__tool-left">
+                        <button onclick="newplot('bar','#0000FF',tables,headers,datatypes)"  class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-bar-chart"></i>&nbsp;&nbsp;Plot</button>
+                        <button onclick="addplot()" class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-bar-chart"></i>&nbsp;&nbsp;Add Plot</button>
+                        <button class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-undo"></i></button>
+                        <button class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-redo"></i></button>
+                    </div>
+                    <div class="table-data__tool-right">
+                        <button data-toggle="modal" data-target="#viewsqlindbs" class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;View SQL</button>
+                        <button data-toggle="modal" data-target="#importdashboard" class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;Import Dashboard</button>
+                        <button data-toggle="modal" data-target="#savedashboard" class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;Save Dashboard</button>
+                        <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+                            <select onchange="exportToJsonFile(states)" class="form-control-sm" name="type">
+                                <option value="0" selected="selected">Export</option>
+                                <option value="json">JSON</option>
+                            </select>
+                            <div class="dropDownSelect2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pl-3" style="height: 100%;">
+                      <div style="display: inline-block;width: 15%;opacity: 1;border-right : 1px solid #fff;height: 100%;">
+                        <div class="col-lg-12" style="border-radius:10px;height:65%;padding: 0px;">
+                            <div class="card" style="border-radius:10px;opacity: 1;height:90%;">
+                                <p class="ml-4" style="color: #3B5998;font-size: 20px;">Drop Columns Area</p>
+                                <div style="padding: 0px;" class="card-body" id="dropcolumnsarea" ondrop="dropcols(event)" ondragover="allowDropcols(event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="responsive col-lg-12" style="padding: 0px;height: 35%;">
+                            <div class="row">
+                                <div onclick="newplot('bar','#0000FF',tables,headers, datatypes)" class="card  text-white cactive" id="bar" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                                <div onclick="newplot('line','#0000FF',tables,headers, datatypes)" class="card  text-white cactive" id="line" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-line-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div onclick="newplot('pie','#0000FF',tables,headers, datatypes)" class="card  text-white cactive" id="pie" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-pie-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                                <div onclick="newplot('scatter','#0000FF',tables,headers, datatypes)" class="card  text-white cactive" id="scatter" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-ellipsis-h fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card  text-white cactive" id="histogram" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-signal fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                                <div class="card  text-white cactive" id="heatmap" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card  text-white cactive" id="bar1" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                                <div class="card  text-white cactive" id="bar2" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card  text-white cactive" id="bar3" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                                <div class="card  text-white cactive" id="bar4" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card  text-white cactive" id="bar5" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                                <div class="card  text-white cactive" id="bar6" style="opacity: 1;border : 1px solid #fff;display: inline-block;width: 49%;padding : 10px;margin:0px;background-color: #3B5998;">
+                                    <div class="text-center">
+                                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true" style="font-size: 60px;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                      </div>
+                      
+                  </div>
+                  <div style="display: inline-block;width: 85%;">
+                        <div class="row plotbtnsarea" id="plotbtnsarea" style="height: 6%;border-bottom: 1px solid #3B5998;padding-top:4px;padding-bottom: 4px;">
+
+                        </div>
+                        <div class="plotdisplay" style="height: 94%;border-bottom: 1px solid #3B5998;">
+                            <div class="au-card-inner" style="height: 100%;" id="iframeholder">
+                                
+                            </div>
+                        </div>
+                  </div>
+                    
+                </div>
+                
+                <!--<div class="filtersarea" style="height:22%;">
+                    <div class="row mt-3 pl-3">
+                        <div class="row col-md-2 form-group">
+                            <div class="col col-md-12">
+                                <label for="select" class=" form-control-label">Aggregation</label>
+                            </div>
+                            <br>
+                            <div class="col-12 col-md-12">
+                                <select name="select" id="aggfilter" class="form-control-sm  text-white">
+                                    <option value="0">Please select</option>
+                                    <option value="min">min</option>
+                                    <option value="max">max</option>
+                                    <option value="sum">sum</option>
+                                    <option value="avg">avg</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row col-md-2 form-group">
+                            <div class="col col-md-12">
+                                <label for="text-input" class=" form-control-label">Range</label>
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <input style="display: inline-block;width: 48%;" type="text" id="minvalue" name="minvalue" placeholder="min" class="input-sm form-control-sm form-control  text-white">
+                                <input style="display: inline-block;width: 48%;" type="text" id="maxvalue" name="maxvalue" placeholder="max" class="input-sm form-control-sm form-control  text-white">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="col col-md-12">
+                                <label for="select" class=" form-control-label">Color</label>
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <input id="colorpicker" onchange="newplot(map,this.value,tables,headers)" style="cursor: pointer;" class="mt-3" type="color" name="favcolor" value="#06b9ce" data-toggle="tooltip" title="want to pick a color for your plot markers!">
+                            </div>
+                        </div>
+                        <div class="col-md-2 offset-md-3">
+                            <button onclick="filters()" class=" mt-3" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-eye"></i>&nbsp;&nbsp;Apply changes</button>
+                        </div>
+                        
+
+                    </div>
+                </div>-->
+                <!--
+                <ul class="nav nav-tabs  text-white" id="myTab" role="tablist" style="border: none;">
+                  <li class="nav-item">
+                    <a class="nav-link text-white" id="table-tab" data-toggle="tab" href="#table" role="tab" aria-controls="home" aria-selected="true">Table</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-white" id="plot-tab" data-toggle="tab" href="#plot" role="tab" aria-controls="profile" aria-selected="false" onclick="newplot(map,'#0000FF',headers)">Plot</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" id="join-tab" data-toggle="tab" href="#join" role="tab" aria-controls="contact" aria-selected="false">Join</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent" style="height: 100%;">
+                  <div class="tab-pane fade" id="plot" role="tabpanel" aria-labelledby="home-tab" style="height: 100%;">
+                      <div class="au-card-inner" style="height: 100%;">
+                        <div class="loader" id="loader" style="position: relative;left:45%;top:40%;"></div>
+                        <iframe style="height:100%;width:100%;border: 2px solid rgba(60,60,60,0.8);" id="plotmap" src="">
+                            
+                        </iframe>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="profile-tab" ondrop="drop(event)" ondragover="allowDrop(event)"  style="height: 100%;">
+                    <div class="table-responsive table--no-card m-b-30" style="height: 100%;padding: 20px;">
+                        <table class="table table-borderless table-striped table-secondary searchable sortable" style="overflow-y: scroll;height: 100%;overflow-x: scroll;width: 100%;">
+                            <thead id="tablehead" class=" text-white">
+                            </thead>
+                            <tbody id="tablebody" class=" text-white" style="overflow-y: scroll;">
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                  <div class="row tab-pane fade show active" id="join" role="tabpanel" aria-labelledby="contact-tab" ondrop="droptable(event)" ondragover="allowDroptable(event)"  style="height: 80%;">
+                      
+                  </div>
+                  <div class="col-lg-12 mt-4">
+                        <button id="payment-button" type="submit" class="btn  btn-block col-md-2 offset-md-9" onclick="jointables(tables[0],tables[1],document.getElementById('t1').value,document.getElementById('t2').value)">
+                            <span id="join-button-amount">View</span>
+                            <span id="join-button-sending" style="display:none;">Joining...</span>
+                        </button>
+                    </div>
+                </div>
+            -->
+                
+            </div>
+        </div>
+     <br><br>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <p>Copyright © 2019 DashDesk. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT-->
+</div>
+{% endblock %}

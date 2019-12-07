@@ -1,0 +1,136 @@
+{% extends 'dash10/base.html' %}
+{% load staticfiles %}
+{% block sidebar %}
+<!---------------- MENU SIDEBAR------------------->
+<aside class="menu-sidebar d-none d-md-block" style="opacity: 1;background-color: #3B5998;">
+    <div class="logo text-white" style="border-bottom : 1px solid #fff;opacity: 1;background-color: #3B5998;">
+        <a href="/dash10/">
+            <h3 class="text-white">DashDesk</h3>
+        </a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1" style="opacity: 1;">
+        <div class="card" style="border : none;background-color: #3B5998;">
+            <div class="card-body text-white">
+                <a id="payment-button" href="/dash10/signin/" class="btn btn-block" style="background-color:#3B5998;border : 1px solid white;">
+                    <i class="fas fa-plus fa-lg" aria-hidden = "true"></i>&nbsp;
+                    <span id="payment-button-amount">Create Dashbaord</span>
+                </a>
+                
+                <nav class="navbar-sidebar">
+                    <ul class="list-unstyled navbar__list">
+                        <li class="has-sub">
+                            <a class="js-arrow text-white" href="#">
+                                <i class="fas fa-tachometer-alt"></i>Dashboards</a>
+                            <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                <li>
+                                    <a href="index.html" class="text-white">Dashboard 1</a>
+                                </li>
+                                <li>
+                                    <a href="index2.html" class="text-white">Dashboard 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="chart.html" class="text-white">
+                                <i class="fas fa-chart-bar"></i>Data Sources</a>
+                        </li>
+                        <li>
+                            <a href="table.html" class="text-white">
+                                <i class="fas fa-table"></i>Charts</a>
+                        </li>
+                        <li class="active">
+                            <a href="form.html" class="text-white">
+                                <i class="far fa-check-square"></i>Analysis</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-white">
+                                <i class="fas fa-calendar-alt"></i>FAQ</a>
+                        </li>
+                        <li>
+                            <a href="map.html" class="text-white">
+                                <i class="fas fa-map-marker-alt"></i>Help</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+{% block body %}
+<div class="page-wrapper"> 
+    <!-- MAIN CONTENT--> 
+    <div class="main-content" style="padding-top: 80px;">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row mt-5">
+                    <div class="col-md-4 offset-md-2 mt-5">
+                        <div class="card text-white">
+                            <div class="card-header" style="color: #3B5998;">
+                                <strong>Create a Account</strong>
+                            </div>
+                            <div class="card-body card-block">
+                                <form action="/dash10/signup/create/" method="post" class="form-horizontal" class="bg-dark text-white">
+                                  {% csrf_token %}
+                                    <div class="row form-group">
+                                        <div class="col col-md-12">
+                                            <div class="input-group">
+                                                <div class="input-group-addon" style="color: #3B5998;">
+                                                    <i class="fa fa-user "></i>
+                                                </div>
+                                                <input type="text" id="input1-group1" name="user" placeholder="Username" class="form-control ">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-12">
+                                            <div class="input-group">
+                                              <div class="input-group-addon ">
+                                                    <i class="far fa-envelope" style="color: #3B5998;"></i>
+                                                </div>
+                                                <input type="email" id="input2-group1" name="email" placeholder="Email" class="form-control ">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-12">
+                                            <div class="input-group">
+                                                <div class="input-group-addon ">
+                                                    <i class="fa fa-user" style="color: #3B5998;"></i>
+                                                </div>
+                                                <input type="text" id="input1-group1" name="passwd" placeholder="Password" class="form-control ">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-dot-circle-o"></i> Create
+                                        </button>
+                                        <button type="reset" class="btn btn-secondary btn-sm">
+                                            <i class="fa fa-ban"></i> Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-5 offset-md-2">
+                        <div class="copyright">
+                            <p>Copyright © 2019 DashDesk. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT-->
+    <!-- END PAGE CONTAINER-->
+</div>
+
+</div>
+{% endblock %}

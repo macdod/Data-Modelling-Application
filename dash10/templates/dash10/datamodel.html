@@ -1,0 +1,282 @@
+{% extends 'dash10/homebase.html' %}
+{% load staticfiles %}
+
+
+{% block username %} 
+{{ username }}
+{% endblock %}
+
+{% block extstyle %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+
+{% block sidebar %} 
+<!---------------- MENU SIDEBAR------------------->
+
+<aside class="menu-sidebar d-none d-md-block" style="opacity: 1;width: 14%;background-color: #3B5998;">
+    <div class="logo text-white" style="border-bottom : 1px solid #fff;opacity: 1;padding : 0px;background-color: #3B5998;">
+        <a href="/dash10/" class="col-md-7">
+            <h3 class="text-white col-md-8" style="padding-left: 0px;">DashDesk</h3>
+        </a>
+         <a href=""><i class="fas fa-long-arrow-alt-left col-md-2" style="font-size: 32px;padding-left: 0px;"></i></a>
+         <a href=""><i class="fas fa-long-arrow-alt-right col-md-2" style="font-size: 32px;"></i></a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1" style="opacity: 1;border-right: 1px solid #fff;">
+        <div class="card" style="border : none;background-color: #3B5998;">
+            <div class="card-body text-white" style="padding-top: 10px;">
+                <form action="" method="post" novalidate="novalidate">
+                    {% csrf_token %}
+                    <div class="row form-group" style="border-bottom : 1px solid #fff;padding-bottom: 10px;">
+                        <div class="col-md-4">
+                            <label for="select" class=" form-control-label" style="font-size:14px;">Database</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p style="font-size: 18px;">Dashdesk</p>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="row col-md-12">
+                            <!--<a href="/dash10/dbs/" id="resetbtn" class="btn btn-primary btn-block col-md-5" style="padding:0px;border-radius: 30px;height:30px;padding-top:2px;">Reset</a>-->
+                        </div>
+                        <nav id="universe" class="navbar-sidebar" style="padding: 10px;padding-top: 20px;margin-bottom: 20px;min-height: 200px;">
+                            
+                        </nav>
+                    </div>
+                    <nav class="navbar-sidebar" style="padding-top: 20px;margin-bottom: 20px;">
+                        <ul class="list-unstyled navbar__list" id="cities1">
+                        </ul>
+                    </nav>
+                </form>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+<!---------------------   END MENU SIDEBAR -------------->
+
+
+<!----------------------  BLOCK BODY --------------->
+{% block body %}
+<div class="container-fluid page-wrapper" style="height: 937px;overflow-y: hidden;"> 
+    <!-- MAIN CONTENT--> 
+    <div class="row pt-5 mr-3" style="margin-top: 1%;">
+        <div style="display: inline-block;width: 100%;">
+            <div class="au-card recent-report col-lg-12 mb-3 mt-4 text-white" style="height: 870px;opacity: 1;margin: 0px;padding : 10px;border-right: 1px solid #fff;border-bottom: 1px solid #fff;padding-left: 0px;padding-right: 0px;">
+                <div class="row table-data__tool pb-2 pl-1" style="border-bottom: 1px solid #3B5998;margin-bottom: 0px;">
+                    <div class="col-md-6">
+                        <button class="mybtn" data-toggle="modal" data-target="#addtables" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class='fas fa-table' style='margin-right:5px;'></i>&nbsp;&nbsp;Add Tables</button>
+                        <button class="mybtn" style="padding : 4px 15px;border-radius: 5px;" onclick="addjoin()">
+                            <i class='fas fa-table' style='margin-right:5px;'></i>&nbsp;&nbsp;Add Join</button>
+                        <button class="mybtn" style="padding : 4px 15px;border-radius: 5px;" data-toggle="modal" data-target="#addasubjectarea">
+                            <i class='fas fa-desktop' style='margin-right:5px;'></i>&nbsp;&nbsp;Add Subject Area</button>
+                        <button class="mybtn" style="padding : 4px 15px;border-radius: 5px;" data-toggle="modal" data-target="#importdatamodel">
+                            <i class='fas fa-table' style='margin-right:5px;'></i>&nbsp;&nbsp;Import Data Model</button>
+                    </div>
+                    <div class="col-md-6 pl-5">
+                        <button class="mybtn" id="joinbtn" onclick="jointhetables(joindlg)" style="padding : 4px 15px;border-radius: 5px;">
+                            &nbsp;&nbsp;Join</button>
+                        <button class="mybtn" id="btnviewsql" data-toggle="modal" data-target="#viewsqlindatamodel" style="padding : 4px 15px;border-radius: 5px;">
+                            &nbsp;&nbsp;View SQL</button>
+                        <button class="mybtn" data-toggle="modal" data-target="#savedatamodel" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;Save Data Model</button>
+                        <button data-toggle="modal" data-target="#classnameforquery"  class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;Create Report</button>
+                        <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+                            <select class="form-control-sm" name="type" style="">
+                                <option selected="selected">Export</option>
+                                <option value="">CSV</option>
+                            </select>
+                            <div class="dropDownSelect2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="joinarea" id="joinarea" style="height: 65%;border-bottom: 1px solid #3B5998;">
+                    <div id="line1"></div>
+                    <div id="line2"></div>
+                    <div id="line3"></div>
+                    <div id="line3"></div>
+                </div>
+                <div class="conditionsarea" id="conditionsarea" style="height: 35%;border-bottom: 1px solid #3B5998;">
+                    <div id="joindialog1" title="Join condition 1" style="background-color: #fff;border : 1px solid #3B5998;color: #3B5998;">
+                        <div class="row">
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select onchange="getcolumnsinjoincondition(this.value,'first',1)" name="select" id="firsttableselect1" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Table 1</option>
+                                        {% for table in tables %}
+                                        <option value="{{table}}">{{table}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select onchange="getcolumnsinjoincondition(this.value,'second',1)" name="select" id="secondtableselect1" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Table 2</option>
+                                        {% for table in tables %}
+                                        <option value="{{table}}">{{table}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select name="select" id="firstcolumnselect1" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Column 1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select name="select" id="secondcolumnselect1" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Column 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="joindialog2" title="Join condition 2" style="background-color: #fff;border : 1px solid #3B5998;color: #3B5998;">
+                        <div class="row">
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select onchange="getcolumnsinjoincondition(this.value,'first',2)" name="select" id="firsttableselect2" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Table 1</option>
+                                        {% for table in tables %}
+                                        <option value="{{table}}">{{table}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select onchange="getcolumnsinjoincondition(this.value,'second',2)" name="select" id="secondtableselect2" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Table 2</option>
+                                        {% for table in tables %}
+                                        <option value="{{table}}">{{table}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select name="select" id="firstcolumnselect2" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Column 1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select name="select" id="secondcolumnselect2" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Column 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="joindialog3" title="Join condition 3" style="background-color: #fff;border : 1px solid #3B5998;color: #3B5998;">
+                        <div class="row">
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select onchange="getcolumnsinjoincondition(this.value,'first',3)" name="select" id="firsttableselect3" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Table 1</option>
+                                        {% for table in tables %}
+                                        <option value="{{table}}">{{table}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select onchange="getcolumnsinjoincondition(this.value,'second',3)" name="select" id="secondtableselect3" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Table 2</option>
+                                        {% for table in tables %}
+                                        <option value="{{table}}">{{table}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select name="select" id="firstcolumnselect3" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Column 1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 row form-group">
+                                <div class="col-12 col-md-12">
+                                    <select name="select" id="secondcolumnselect3" class="form-control-sm input-sm form-control" style="color: #3B5998;">
+                                        <option value="0">Column 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!--
+                <ul class="nav nav-tabs text-white" id="myTab" role="tablist" style="border: none;">
+                  <li class="nav-item">
+                    <a class="nav-link text-white" id="table-tab" data-toggle="tab" href="#table" role="tab" aria-controls="home" aria-selected="true">Table</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-white" id="plot-tab" data-toggle="tab" href="#plot" role="tab" aria-controls="profile" aria-selected="false" onclick="newplot(map,document.getElementById('colorpicker').value,headers)">Plot</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" id="join-tab" data-toggle="tab" href="#join" role="tab" aria-controls="contact" aria-selected="false">Join</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent" style="height: 100%;">
+                  <div class="tab-pane fade" id="plot" role="tabpanel" aria-labelledby="home-tab" style="height: 100%;">
+                      <div class="au-card-inner" style="height: 100%;">
+                        <div class="loader" id="loader" style="position: relative;left:45%;top:40%;"></div>
+                        <iframe style="height:100%;width:100%;border: 2px solid rgba(60,60,60,0.8);" id="plotmap" src="">
+                            
+                        </iframe>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="profile-tab" ondrop="drop(event)" ondragover="allowDrop(event)"  style="height: 100%;">
+                    <div class="table-responsive table--no-card m-b-30" style="height: 100%;padding: 20px;">
+                        <table class="table table-borderless table-striped table-secondary searchable sortable" style="overflow-y: scroll;height: 100%;overflow-x: scroll;width: 100%;">
+                            <thead id="tablehead" class="bg-dark text-white">
+                            </thead>
+                            <tbody id="tablebody" class="bg-secondary text-white" style="overflow-y: scroll;">
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                  <div class="row tab-pane fade show active" id="join" role="tabpanel" aria-labelledby="contact-tab" ondrop="droptable(event)" ondragover="allowDroptable(event)"  style="height: 80%;">
+                      
+                  </div>
+                  <div class="col-lg-12 mt-4">
+                        <button id="payment-button" type="submit" class="btn btn-primary btn-block col-md-2 offset-md-9" onclick="jointables(tables[0],tables[1],document.getElementById('t1').value,document.getElementById('t2').value)">
+                            <span id="join-button-amount">View</span>
+                            <span id="join-button-sending" style="display:none;">Joining...</span>
+                        </button>
+                    </div>
+                </div>
+            -->
+                
+            </div>
+        </div>
+     <br><br>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <p>Copyright © 2019 DashDesk. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT-->
+</div>
+{% endblock %}

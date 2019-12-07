@@ -1,0 +1,184 @@
+{% extends 'dash10/homebase.html' %}
+{% load staticfiles %}
+
+
+
+{% block username %}
+{{ username }}
+{% endblock %}
+
+
+
+{% block sidebar %}
+<!---------------- MENU SIDEBAR------------------->
+
+<aside class="menu-sidebar d-none d-md-block bg-dark" style="opacity: 0.8;width: 14%;">
+    <div class="logo bg-dark text-white" style="border-bottom : 1px solid #fff;opacity: 0.8;">
+        <a href="#">
+            <h3 class="text-white">DashDesk</h3>
+        </a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1 bg-dark" style="opacity: 0.8;">
+        <div class="card" style="border : none;">
+            <div class="card-body bg-dark text-white">
+                <form action="" method="post" novalidate="novalidate">
+                    {% csrf_token %}
+                    <div class="row form-group" style="border-bottom : 1px solid #fff;">
+                        <div class="col-md-4">
+                            <label for="select" class=" form-control-label" style="font-size:14px;">Excel</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="select" id="select" class="form-control-sm bg-dark text-white">
+                                <option value="0">Please select</option>
+                                <option value="1">DashDesk</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="row col-md-12">
+                            <label id="tablelabel" for="select" class=" form-control-label col-md-6">Select Table</label>
+                            <a href="/dash10/dbs/" id="resetbtn" class="btn btn-secondary btn-block col-md-5" style="padding:0px;border-radius: 30px;height:30px;padding-top:2px;">Reset</a>
+                        </div>
+                        <nav class="navbar-sidebar" style="padding: 10px;padding-top: 20px;margin-bottom: 20px;">
+                            <ul class="list-unstyled navbar__list" id="cities1">
+                                {% for d in data %}
+                                    <li id="{{d}}" draggable = 'true' ondragstart='drag(event)' style="font-size: 14px;"><i class='fas fa-table' style='margin-right:5px;'></i>{{d}}</li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    </div>
+                    <div>
+                        <button id="payment-button" type="button" class="btn btn-secondary btn-block" onclick="newplot('bar',document.getElementById('colorpicker').value,headers)">
+                            <i class="fa fa-line-chart fa-lg" aria-hidden = "true"></i>&nbsp;
+                            <span id="payment-button-amount">Plot</span>
+                            <span id="payment-button-sending" style="display:none;">Plotting...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+<!----------------  END MENU SIDEBAR  -------------------->
+
+
+
+<!-----------------  BODY ------------------------->
+{% block body %}
+<div class="page-wrapper" style="left:2%;"> 
+    
+    <!-- MAIN CONTENT--> 
+    <div class="main-content" style="padding-top: 80px;">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="row">
+                            <div class="au-card recent-report col-lg-12 mb-3 mt-3 bg-dark text-white" style="height: 830px;opacity: 0.8;margin: 0px;padding : 20px;">
+                                <ul class="nav nav-tabs bg-dark text-white" id="myTab" role="tablist" style="border: none;">
+                                  <li class="nav-item">
+                                    <a class="nav-link active" id="table-tab" data-toggle="tab" href="#table" role="tab" aria-controls="home" aria-selected="true">Table</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link text-white" id="plot-tab" data-toggle="tab" href="#plot" role="tab" aria-controls="profile" aria-selected="false" onclick="newplot(map,document.getElementById('colorpicker').value,headers)">Plot</a>
+                                  </li>
+                                </ul>
+                                <div class="tab-content" id="myTabContent" style="height: 100%;">
+                                  <div class="tab-pane fade" id="plot" role="tabpanel" aria-labelledby="home-tab" style="height: 100%;">
+                                      <div class="au-card-inner" style="height: 100%;">
+                                        <div class="loader" id="loader" style="position: relative;left:45%;top:40%;"></div>
+                                        <iframe style="height:100%;width:100%;border: 2px solid rgba(60,60,60,0.8);" id="plotmap" src="">
+                                            
+                                        </iframe>
+                                    </div>
+                                  </div>
+                                  <div class="tab-pane fade show active" id="table" role="tabpanel" aria-labelledby="profile-tab" ondrop="drop(event)" ondragover="allowDrop(event)"  style="height: 100%;">
+                                    <div class="table-responsive table--no-card m-b-30" style="height: 100%;padding: 20px;">
+                                        <table class="table table-borderless table-striped table-secondary" style="overflow-y: scroll;height: 100%;overflow-x: scroll;width: 100%;">
+                                            <thead id="tablehead" class="bg-dark text-white">
+                                            </thead>
+                                            <tbody id="tablebody" class="bg-secondary text-white" style="overflow-y: scroll;">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="responsive col-lg-12 mt-5" style="padding-right: 0px;">
+                            <div class="card bg-secondary text-white cactive" id="bar" style="opacity: 0.6;margin-bottom: 15px;">
+                                <div class="row card-body" onclick="newplot('bar',document.getElementById('colorpicker').value,headers)" style="cursor: pointer;padding: 10px;">
+                                    <i class="fa fa-bar-chart fa-lg col-md-3" aria-hidden="true" style="font-size: 30px;"></i>
+                                    <h3 class="card-title mb-3 col-md-9">Bar</h3>
+                                </div>
+                            </div>
+                            <div class="card bg-secondary text-white" id="line" style="opacity: 0.6;margin-bottom: 15px;">
+                                <div class="row card-body" onclick="newplot('line',document.getElementById('colorpicker').value,headers)" style="cursor: pointer;;padding: 10px;">
+                                    <i class="fa fa-line-chart fa-lg col-md-3" aria-hidden="true" style="font-size: 30px;"></i>
+                                    <h3 class="card-title text-white mb-3 col-md-9">Line</h3>
+                                </div>
+                            </div>
+                            <div class="card bg-secondary text-white" id="pie" style="opacity: 0.6;margin-bottom: 15px;">
+                                <div class="row card-body" onclick="newplot('pie',document.getElementById('colorpicker').value,headers)" style="cursor: pointer;;padding: 10px;">
+                                    <i class="fa fa-pie-chart fa-lg col-md-3" aria-hidden="true" style="font-size: 30px;"></i>
+                                    <h3 class="card-title text-white mb-3 col-md-9">Pie</h3>
+                                </div>
+                            </div>
+                            <div class="card bg-secondary text-white" id="scatter" style="opacity: 0.6;margin-bottom: 15px;">
+                                <div class="row card-body" onclick="newplot('scatter',document.getElementById('colorpicker').value,headers)" style="cursor: pointer;;padding: 10px;">
+                                    <i class="fa fa-ellipsis-h fa-lg col-md-3" aria-hidden="true" style="font-size: 30px;"></i>
+                                    <h3 class="card-title text-white mb-3 col-md-9">Scatter</h3>
+                                </div>
+                            </div>
+                            <div class="card bg-secondary text-white" id="histogram" style="opacity: 0.6;margin-bottom: 15px;">
+                                <div class="row card-body" onclick="newplot('histogram',document.getElementById('colorpicker').value,headers)" style="cursor: pointer;;padding: 10px;">
+                                    <i class="fa fa-signal fa-lg col-md-3" aria-hidden="true" style="font-size: 30px;"></i>
+                                    <h3 class="card-title text-white mb-3 col-md-9">Histogram</h3>
+                                </div>
+                            </div>
+                            <div class="card bg-secondary text-white" id="heatmap" style="opacity: 0.6;margin-bottom: 15px;">
+                                <div class="row card-body"onclick="newplot('heatmap',document.getElementById('colorpicker').value,headers)" style="cursor: pointer;;padding: 10px;">
+                                    <i class="fa fa-braille fa-lg col-md-3" aria-hidden="true" style="font-size: 30px;"></i>
+                                    <h3 class="card-title text-white mb-3 col-md-9">Heatmap</h3>
+                                </div>
+                            </div>
+                      </div>
+                      <div class="col-lg-12 mt-5" style="border-radius:10px;">
+                            <div class="card bg-dark text-white" style="border-radius:10px;opacity: 0.8;">
+                                <div class="card-body">
+                                    <form action="" method="post" novalidate="novalidate" class="row">
+                                        <center><div class="form-group col-lg-12 ml-3">
+                                            <div class="col col-md-12">
+                                                <label for="select" class=" form-control-label">Color</label>
+                                            </div>
+                                            <div class="col-12 col-md-12">
+                                                <input id="colorpicker" onchange="newplot(map,this.value,headers)" style="cursor: pointer;" class="mt-3" type="color" name="favcolor" value="#06b9ce" data-toggle="tooltip" title="want to pick a color for your plot markers!">
+                                            </div>
+                                        </div></center>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+                </div><br><br>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="copyright">
+                            <p>Copyright © 2019 DashDesk. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT-->
+
+</div>
+{% endblock %}
+<!--------------------------  END BODY ------------------------>

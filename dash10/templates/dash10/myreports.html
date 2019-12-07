@@ -1,0 +1,145 @@
+{% extends 'dash10/homebase.html' %}
+{% load staticfiles %}
+
+
+
+{% block username %}
+{{ username }}
+{% endblock %}
+
+{% block extstyle %}
+<link rel="stylesheet" href="{% static 'css/home1.css' %}">
+{% endblock %}
+
+
+{% block sidebar %}
+<!---------------- MENU SIDEBAR------------------->
+
+<aside class="menu-sidebar d-none d-md-block bg-dark" style="opacity: 1;width: 14%;">
+    <div class="logo bg-dark text-white" style="border-bottom : 1px solid #fff;opacity: 1;padding : 0px;">
+        <a href="/dash10/" class="col-md-7">
+            <h3 class="text-white col-md-8" style="padding-left: 0px;">DashDesk</h3>
+        </a>
+         <a href=""><i class="fas fa-long-arrow-alt-left col-md-2" style="font-size: 32px;padding-left: 0px;"></i></a>
+         <a href=""><i class="fas fa-long-arrow-alt-right col-md-2" style="font-size: 32px;"></i></a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1 bg-dark" style="opacity: 1;border-right: 1px solid #fff;">
+        <div class="card" style="border : none;">
+            <div class="card-body bg-dark text-white">
+                <a href="/dash10/createdashboard/" id="payment-button" class="btn btn-secondary btn-block">
+                    <i class="fas fa-plus fa-lg" aria-hidden = "true"></i>&nbsp;
+                    <span id="payment-button-amount">Create Dashbaord</span>
+                </a>
+
+                <nav class="navbar-sidebar">
+                    <ul class="list-unstyled navbar__list">
+                        <li>
+                            <a href="chart.html" class="text-white">
+                                <i class="fas fa-folder"></i>Recent Reports</a>
+                        </li>
+                        <li>
+                            <a href="table.html" class="text-white">
+                                <i class="fas fa-folder"></i>My Reports</a>
+                        </li>
+                        <li class="active">
+                            <a href="form.html" class="text-white">
+                                <i class="fa fa-database"></i>Data Sources</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-white">
+                                <i class="far fa-clock"></i>History</a>
+                        </li>
+                        <li class="has-sub">
+                            <a class="js-arrow text-white" href="#">
+                                <i class="fas fa-chart-bar"></i>Dashboards</a>
+                            <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                <li>
+                                    <a href="index.html" class="text-white">Dashboard 1</a>
+                                </li>
+                                <li>
+                                    <a href="index2.html" class="text-white">Dashboard 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+<!--------------------- END MENU SIDEBAR ------------------------->
+
+
+
+<!--------------------   BODY  ------------------------------>
+{% block body %}
+<div class="page-wrapper">
+
+    <!-- MAIN CONTENT-->
+    <div class="main-content pt-4">
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card bg-dark text-white">
+                    <div class="card-header"> Reports </div>
+                    <div class="card-body">
+                        <div class="responsive1 col-lg-12 mb-3 mt-3 bg-dark text-white" style="height: 200px;opacity: 1;margin: 0px;">
+                            {% for report in reports %}
+                                <div class="card rounded bg-secondary text-center cactive pt-5" style="opacity: 1; height: 200px;">
+                                    <i class="fas fa-folder-open fa-lg col-md-3" style="margin-top: 10px; font-size: 50px;"></i>
+                                    <div class="card-body"><a href="#" onclick="opensavedreport('{{report.reportname}}', '{{username}}')">{{ report.reportname }}</a></div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+              
+                <!--
+                <div class="jumbotron bg-dark text-white" style="opacity: 1">
+                   <div class="row" style="opacity: 0.7;">
+                        <div class="col-md-3">
+                            <center><i style="font-size: 150px;" class="fas fa-database"></i>
+                                <h3 class="mt-3 text-white">Import Database</h3>
+                            </center>
+                        </div>
+                        <div class="col-md-1">
+                            <center><i style="font-size: 80px;" class="fas fa-chevron-right mt-5"></i></center>
+                        </div>
+                        <div class="col-md-3">
+                             <center><i style="font-size: 150px;" class="fas fa-table"></i>
+                                <h3 class="mt-2 text-white">Drag and Drop</h3>
+                             </center>
+                        </div>
+                        <div class="col-md-1">
+                            <center><i style="font-size: 80px;" class="fas fa-chevron-right mt-5"></i></center>
+                        </div>
+                        <div class="col-md-3">
+                             <center><i style="font-size: 150px;" class="fas fa-chart-bar"></i>
+                                <h3 class="mt-1 text-white">Visualize</h3>
+                             </center>
+                        </div>
+                    </div>
+
+                </div>
+
+                -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 offset-md-2">
+                <div class="copyright">
+                    <p>Copyright © 2019 DashDesk. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- END MAIN CONTENT-->
+
+</div>
+<!------------------------ END BODY ------------------->
+
+
+{% endblock %}

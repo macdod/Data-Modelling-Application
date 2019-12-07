@@ -1,0 +1,892 @@
+{% load staticfiles %}
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>   
+
+
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+
+
+    <!-- Title Page-->
+    <title>Dashboard</title>
+
+
+
+    <!-- Fontfaces CSS-->
+    <link href="{% static 'css/font-face.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/font-awesome-4.7/css/font-awesome.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/font-awesome-5/css/fontawesome-all.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/mdi-font/css/material-design-iconic-font.min.css' %}" rel="stylesheet" media="all">
+
+
+
+    <!-- Bootstrap CSS-->
+    <link href="{% static 'vendor/bootstrap-4.1/bootstrap.min.css' %}" rel="stylesheet" media="all">
+
+
+
+    <!-- Vendor CSS-->
+    <link href="{% static 'vendor/animsition/animsition.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/wow/animate.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/slick/slick.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/select2/select2.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet" media="all">
+    <link rel="stylesheet" type="text/css" href="{% static 'dash10/slick/slick.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'dash10/slick/slick-theme.css' %}"/>
+
+
+    <!--- links   -->
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      
+
+
+
+    <!-- Main CSS-->
+    <link href="{% static 'css/theme.css' %}" rel="stylesheet" media="all">
+    {% block extstyle %}
+    {% endblock %}
+
+
+
+</head>
+
+
+
+<!-------------------------------     DATA MODEL MODALS         --------------------------->
+
+<!-- Upload Excel modal medium -->
+<div class="modal fade" id="uploadexcel" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Choose Database</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/dash10/query/" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="classname" class=" form-control-label" style="opacity: 1;">Class Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="classname" name="classname" placeholder="Enter Class Name in which to load the table" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="uploadcsv" class=" form-control-label">Upload CSV</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="file" id="uploadcsv" name="uploadfile" class="form-control-file">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="reportname" class=" form-control-label" style="opacity: 1;">Report Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="reportname" name="reportname" placeholder="Enter Report Name in which to load the table" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="whichmethod" name="whichmethod" value="0">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Connect</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- end Upload Excel modal medium -->
+
+<!-- Method 4 Through Custom Sql modal medium -->
+<div class="modal fade" id="datasourceandsql" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Choose Database</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/dash10/query/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="select" class=" form-control-label" style="opacity: 1;">Select Data Source</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <select name="dbtype" id="select" class="form-control bg-white text-dark">
+                                <option value="0">Please select</option>
+                                <option value="mysql">MySQL</option>
+                                <option value="oracle">Oracle</option>
+                                <option value="excel">Excel</option>
+                                <option value="hive">Hive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="hostname" class=" form-control-label" style="opacity: 1;">Hostname</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="hostname" name="host" placeholder="Enter Hostname" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="port" class=" form-control-label" style="opacity: 1;">Port</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="port" name="port" placeholder="Enter Port" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="username" class=" form-control-label" style="opacity: 1;">Username</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="username" name="user" placeholder="Enter Username" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="password" class=" form-control-label" style="opacity: 1;">Password</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="password" id="password" name="password" placeholder="Enter Password" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="dbname" class=" form-control-label" style="opacity: 1;">Database Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="dbname" name="dbname" placeholder="Enter DB Name" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="classname" class=" form-control-label" style="opacity: 1;">Class Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="classname" name="classname" placeholder="Enter Class Name in which to load the table" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="sqlquery" class=" form-control-label" style="opacity: 1;">Enter SQL:</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="sqlquery" name="sqlquery" placeholder="Enter SQL" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="reportname" class=" form-control-label" style="opacity: 1;">Report Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="reportname" name="reportname" placeholder="Enter Report Name in which to load the table" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="whichmethod" value="1">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Connect</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end modal medium -->
+
+
+
+<!-- modal medium -->
+<div class="modal fade" id="selectdatabase" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Choose Database</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/dash10/datamodel/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="select1" class=" form-control-label" style="opacity: 1;">Select Data Source</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <select name="dbtype" id="select1" class="form-control bg-white text-dark">
+                                <option value="0">Please select</option>
+                                <option value="mysql">MySQL</option>
+                                <option value="oracle">Oracle</option>
+                                <option value="excel">Excel</option>
+                                <option value="hive">Hive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="hostname1" class=" form-control-label" style="opacity: 1;">Hostname</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="hostname1" name="host" placeholder="Enter Hostname" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="port" class=" form-control-label" style="opacity: 1;">Port</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="port" name="port" placeholder="Enter Port" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="username" class=" form-control-label" style="opacity: 1;">Username</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="username" name="user" placeholder="Enter Username" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="password" class=" form-control-label" style="opacity: 1;">Password</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="password" id="password" name="password" placeholder="Enter Password" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="dbname" class=" form-control-label" style="opacity: 1;">Database Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="dbname" name="dbname" placeholder="Enter DB Name" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn text-white" style="background-color: #3B5998;">Connect</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- end modal medium -->
+
+
+
+
+
+
+
+<!--   ADD A CLASS ---->
+
+<div class="modal fade" id="addasubjectarea" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">ADD A SUBJECT AREA</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="subjectareaname" class="form-control-label" style="opacity: 1;">SUBJECT AREA NAME</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="subjectareaname" name="enteredsql" placeholder="Enter Name of Subject Area" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" onclick="addsubjectarea()" data-dismiss="modal" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--   SAVE DATA MODEL ---->
+
+<div class="modal fade" id="savedatamodel" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Save Data Model</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="datamodelname" class="form-control-label" style="opacity: 1;">Data Model Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="datamodelname" name="enteredsql" placeholder="Enter Name of Data Model" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" onclick="savedatamodel(classes, objects, types, keys)" data-dismiss="modal" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!----  IMPORT DATA MODEL  ----->
+
+<div class="modal fade" id="importdatamodel" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Import Data Model</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="selectdatamodel" class="form-control-label" style="opacity: 1;">Data Model Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="selectdatamodel" name="enteredsql" placeholder="Enter Path of Data Model" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                        <div class="col col-md-3">
+                            <label for="selectdatamodeljoin" class="form-control-label" style="opacity: 1;">Join Condition File Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="selectdatamodeljoin" name="enteredsql" placeholder="Enter Path of Join Condition File Name" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" onclick="importdatamodel()" data-dismiss="modal" class="btn btn-primary">Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!---- ADD TABLES --->
+
+<div class="modal fade" id="addtables" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title " id="mediumModalLabel" style="opacity: 1;color: #3B5998;">{{ dbname }}</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <ul class="list-unstyled js-sub-list bg-white text-dark ml-5">
+                            {% for table in tables %}
+                            <li class="checkbox">
+                                <label for="checkbox{{forloop.counter}}" class="form-check-label " style="color: #3B5998;">
+                                    <input type="checkbox" id="imptb{{table}}" name="checkbox{{forloop.counter}}" value="{{table}}" class="form-check-input">{{table}}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" onclick="addtables({{tables}})" data-dismiss="modal" class="btn btn-primary">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--------------------  VIEW SQL  ---------------->
+<div class="modal fade" id="viewsqlindatamodel" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">VIEW SQL</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-12">
+                            <div id="divviewsqlindatamodel" class="" style="opacity: 1;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!------------------------------   /DATA MODEL MODALS   ------------------------------->
+
+<!------------------------------  QUERY MODALS   ------------------------------------>
+
+<!----  CLASS NAME FOR QUERY MODAL  ---->
+
+<div class="modal fade" id="classnameforquery" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="queryclassname" method="post" action="/dash10/report/" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="reportname" class=" form-control-label" style="opacity: 1;">Report Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="reportname" name="reportname" placeholder="Enter Report Name in which to load the table" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                     <input type="hidden" id="whichmethod" name="whichmethod" value="2">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- end Class Name For Query modal medium -->
+
+<!------------------------------   /QUERY MODALS -------------------------------->
+
+<!------------------------------  DASHBOARD MODALS  ----------------------------->
+
+
+
+
+<!--   SAVE DATA MODEL ---->
+
+<div class="modal fade" id="savedashboard" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Save DashBoard</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="dashboardname" class="form-control-label" style="opacity: 1;">Dashboard Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="dashboardname" name="dashboardname" placeholder="Enter Name of Dashboard" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" onclick="savedashboard()" data-dismiss="modal" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!----  IMPORT DASHBOARD  ----->
+
+<div class="modal fade" id="importdashboard" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Import Dashboard</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="selectdashboard" class="form-control-label" style="opacity: 1;">Dashboard Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="selectdashboard" name="selectdashboard" placeholder="Enter Path of Dashboard" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" onclick="importdashboard()" data-dismiss="modal" class="btn btn-primary">Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="viewsqlindbs" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h4 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">VIEW SQL</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-12">
+                            <div id="divviewsqlindbs" class="" style="opacity: 1;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-------------------------------  // DASHBOARD MODALS  ----------------------->
+
+
+<!--Modal For Custom SQl-->
+
+<div class="modal fade" id="customsql" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Custom SQL Query</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="customsql" class="form-control-label" style="opacity: 1;">Enter Custom SQL</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="enteredsql" name="enteredsql" placeholder="Enter Custom SQL here" class="form-control bg-white text-dark" style="overflow-wrap:break-word;" wrap="soft">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button onclick="reportbycustomsql()" type="button" data-dismiss="modal" class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End modal for Custom SQL-->
+
+<!--  Modal for Database Connection -->
+<!-- modal medium -->
+<div class="modal fade" id="savereport" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Save Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="reportname" class="form-control-label" style="opacity: 1;">Report Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="filename" name="reportname" placeholder="Report Name" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="reportcategory" class=" form-control-label" style="opacity: 1;">Report Category</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="reportcategory" name="reportcategory" placeholder="Report Category" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button onclick="savereport()" type="button" data-dismiss="modal" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- end modal medium -->
+
+
+<!-- modal medium -->
+<div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title bg-white text-dark" id="mediumModalLabel" style="opacity: 1;">Choose Database</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1;">
+                    <span aria-hidden="true" class="text-dark">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/dash10/dbs/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="select" class=" form-control-label" style="opacity: 1;">Select Data Source</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <select name="dbtype" id="select" class="form-control bg-white text-dark">
+                                <option value="0">Please select</option>
+                                <option value="mysql">MySQL</option>
+                                <option value="oracle">Oracle</option>
+                                <option value="excel">Excel</option>
+                                <option value="hive">Hive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="hostname" class=" form-control-label" style="opacity: 1;">Hostname</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="hostname" name="host" placeholder="Enter Hostname" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="port1" class=" form-control-label" style="opacity: 1;">Port</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="port1" name="port" placeholder="Enter Port" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="username1" class=" form-control-label" style="opacity: 1;">Username</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="username1" name="user" placeholder="Enter Username" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="password1" class=" form-control-label" style="opacity: 1;">Password</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="password" id="password1" name="password" placeholder="Enter Password" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="dbname1" class=" form-control-label" style="opacity: 1;">Database Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="dbname1" name="dbname" placeholder="Enter DB Name" class="form-control bg-white text-dark">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="uploadcsv" class=" form-control-label">Upload CSV/Erwin</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="file" id="uploadcsv" name="uploadfile" class="form-control-file">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Connect</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- end modal medium -->
+
+
+
+<body class="animsition" {% if load %} onload="importdatamodel('{{filename}}', '{{username}}')" {% endif %} {% if loaddb %} onload="importdashboard('{{filename}}', '{{username}}')" {% endif %}>
+
+
+<!---------- HEADER MOBILE ---------------->
+<header class="header-mobile d-block d-lg-none bg-white" style="opacity: 1;">
+    <div class="header-mobile__bar">
+        <div class="container-fluid">
+            <div class="header-mobile-inner">
+                <a class="logo" href="index.html">
+                  <h3>DashDesk</h3>
+                </a>
+                <button class="hamburger hamburger--slider" type="button">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+<!--------------- END HEADER MOBILE--------------->
+
+
+<!---------------  MENU SIDEBAR ------------------>
+{% block sidebar %}
+{% endblock %}
+<!------------- END MENU SIDEBAR------------------>
+
+
+
+<!-------------- PAGE CONTAINER-------------------->
+<div class="page-container">
+
+
+
+<!-- HEADER DESKTOP-->
+<header class="header-desktop" style="opacity: 1;left: 14%;border-bottom: 1px solid #fff;z-index:500;">
+    <div class="section__content section__content--p30">
+        <div class="row header-wrap">
+            <form class="form-header col-md-9" action="" method="POST">
+                <input class="au-input au-input--xl bg-white text-dark" type="text" name="search" placeholder="Search for datas &amp; reports..." />
+                <button class="au-btn--submit btn-primary" type="submit">
+                    <i class="zmdi zmdi-search"></i>
+                </button>
+            </form>
+            <div class="header-button col-md-3">
+                <div class="noti-wrap">
+                    <div class="noti__item">
+                        <a data-toggle="tooltip" title = "Data Models" href="/dash10/mydatamodels/"><i style="color: #3B5998;"  class="fas fa-table "></i></a>
+                    </div>
+                    <div class="noti__item">
+                        <a data-toggle="tooltip" title = "Reports" href="/dash10/myreports/"><i style="color: #3B5998;"  class="fas fa-table "></i></a>
+                    </div>
+                    <div class="noti__item">
+                        <a data-toggle="tooltip" title = "Dashboards" href="/dash10/mydashboards/"><i style="color: #3B5998;"  class="fas fa-chart-line "></i></a>
+                    </div>
+                    
+                </div>
+                <div class="account-wrap">
+                    <div class="account-item clearfix js-item-menu">
+                        <div class="content" style="margin-left: 0px;">
+                            <a class="js-acc-btn  " href="#"><i style="color: #3B5998;"  class="fas fa-user fa-lg " aria-hidden = "true" style="opacity: 1;"></i>{% block username %}{% endblock %}</a>
+                        </div>
+                        <div class="account-dropdown js-dropdown">
+                            <div class="account-dropdown__body">
+                                <div class="account-dropdown__item">
+                                    <a href="/dash10/userprofile/">
+                                        <i class="zmdi zmdi-account"></i>Profile</a>
+                                </div>
+                                <div class="account-dropdown__item">
+                                    <a href="/dash10/usersetting">
+                                        <i class="zmdi zmdi-settings"></i>Setting</a>
+                                </div>
+                            </div>
+                            <div class="account-dropdown__footer">
+                                <a href="/dash10/logout/">
+                                    <i class="zmdi zmdi-power"></i>Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-------------- /HEADER DESKTOP  ------------->
+
+
+
+<!--------------  BODY  --------------------->
+   {% block body %}
+   {% endblock %}
+<!-------------   /BODY  -------------------->
+
+</div>
+
+
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+
+
+
+<!-- Bootstrap JS-->
+<script src="{% static 'vendor/bootstrap-4.1/popper.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap-4.1/bootstrap.min.js' %}"></script>
+
+
+
+<!-- Vendor JS   --- -->
+<script src="{% static 'vendor/slick/slick.min.js' %}">
+</script>
+<script src="{% static 'vendor/wow/wow.min.js' %}"></script>
+<script src="{% static 'vendor/animsition/animsition.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap-progressbar/bootstrap-progressbar.min.js' %}">
+</script>
+<script src="{% static 'vendor/counter-up/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'vendor/counter-up/jquery.counterup.min.js' %}">
+</script>
+<script src="{% static 'vendor/circle-progress/circle-progress.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'vendor/chartjs/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/select2/select2.min.js' %}">
+</script>
+<script type="text/javascript" src="{% static 'dash10/slick/slick.min.js' %}"></script>
+
+
+
+<!-- Main JS-->
+<script src="{% static 'js/main.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/home.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'js/jqueryrotate.js' %}"></script>
+</body>
+
+</html>
+<!-- end document-->

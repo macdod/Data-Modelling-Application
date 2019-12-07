@@ -1,0 +1,285 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en"> 
+ 
+<head>  
+
+
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+
+
+    <!-- Title Page-->
+    <title>Dashboard</title>
+
+
+
+    <!-- Fontfaces CSS-->
+    <link href="{% static 'css/font-face.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/font-awesome-4.7/css/font-awesome.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/font-awesome-5/css/fontawesome-all.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/mdi-font/css/material-design-iconic-font.min.css' %}" rel="stylesheet" media="all">
+
+
+
+    <!-- Bootstrap CSS-->
+    <link href="{% static 'vendor/bootstrap-4.1/bootstrap.min.css' %}" rel="stylesheet" media="all">
+
+
+
+    <!-- Vendor CSS-->
+    <link href="{% static 'vendor/animsition/animsition.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/wow/animate.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/slick/slick.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/select2/select2.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet" media="all">
+    <link rel="stylesheet" type="text/css" href="{% static 'dash10/slick/slick.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'dash10/slick/slick-theme.css' %}"/>
+
+
+
+    <!-- Main CSS-->
+    <link href="{% static 'css/theme.css' %}" rel="stylesheet" media="all">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+
+</head>
+
+
+
+<!-- modal medium -->
+<div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content text-white">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="mediumModalLabel" style="opacity: 0.8;">Choose Database</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.8;">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/dash10/dbs/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="select" class=" form-control-label" style="opacity: 0.8;">Select Data Source</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <select name="dbtype" id="select" class="form-control text-white">
+                                <option value="0">Please select</option>
+                                <option value="mysql">MySQL</option>
+                                <option value="oracle">Oracle</option>
+                                <option value="hive">Hive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="email-input" class=" form-control-label" style="opacity: 0.8;">Hostname</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="email-input" name="host" placeholder="Enter Hostname" class="form-control text-white">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="email-input" class=" form-control-label" style="opacity: 0.8;">Port</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="email-input" name="port" placeholder="Enter Port" class="form-control text-white">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="email-input" class=" form-control-label" style="opacity: 0.8;">Username</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="email-input" name="user" placeholder="Enter Username" class="form-control text-white">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="email-input" class=" form-control-label" style="opacity: 0.8;">Password</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="password" id="email-input" name="password" placeholder="Enter Password" class="form-control text-white">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">
+                            <label for="email-input" class=" form-control-label" style="opacity: 0.8;">Database Name</label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" id="email-input" name="dbname" placeholder="Enter DB Name" class="form-control text-white">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Connect</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal medium -->
+
+
+
+<body class="animsition">
+
+<!---------- HEADER MOBILE ---------------->
+
+<header class="header-mobile d-block d-lg-none" style="opacity: 0.8;">
+    <div class="header-mobile__bar">
+        <div class="container-fluid">
+            <div class="header-mobile-inner">
+                <a class="logo" href="index.html">
+                  <h3>DashDesk</h3>
+                </a>
+                <button class="hamburger hamburger--slider" type="button">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<!--------------- END HEADER MOBILE--------------->
+{% block sidebar %}
+{% endblock %}
+<!------------- END MENU SIDEBAR------------------>
+
+
+
+<!-------------- PAGE CONTAINER-------------------->
+<div class="page-container">
+    <!-- HEADER DESKTOP-->
+    <header class="header-desktop" style="opacity: 0.8;">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="header-wrap">
+                    <form class="form-header" action="" method="POST">
+                        <input class="au-input au-input--xl text-white" type="text" name="search" placeholder="Search for datas &amp; reports..." />
+                        <button class="au-btn--submit btn-primary" type="submit">
+                            <i class="zmdi zmdi-search"></i>
+                        </button>
+                    </form>
+                    <div class="header-button">
+                        <div class="noti-wrap">
+                            <div class="noti__item js-item-menu">
+                                <i class="fa fa-database "></i>
+                                <div class="mess-dropdown js-dropdown">
+                                    <div class="mess__title">
+                                        <p>Select Database</p>
+                                    </div>
+                                    <div class="mess__item">
+                                        <div class="image img-cir img-40">
+                                            <img src="{% static 'images/mysql.png' %}" alt="Michelle Moreno" />
+                                        </div>
+                                        <div class="content">
+                                            <a href="/dash10/signin/"> <h6>MySQL Database</h6> </a>
+                                        </div>
+                                    </div>
+                                    <div class="mess__item">
+                                        <div class="image img-cir img-40">
+                                            <img src="{% static 'images/oracle.jpg' %}" alt="Diane Myers" />
+                                        </div>
+                                        <div class="content">
+                                           <a href="/dash10/signin/"> <h6>Oracle Database</h6> </a>
+                                        </div>
+                                    </div>
+                                    <div class="mess__footer">
+                                        <a href="#">View all Databases</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="noti__item">
+                                <a href="https://github.com/rishikesh1410"><i class="fab fa-github "></i></a>
+                            </div>
+                        </div>
+                        <div class="account-wrap">
+                            <div class="account-item clearfix js-item-menu ">
+                                <div class="content" style="margin-left: 0px;">
+                                    <a class="js-acc-btn text-white" href="#"><i class="fas fa-user text-white fa-lg " aria-hidden = "true" style="opacity: 0.8;"></i></a>
+                                </div>
+                                <div class="account-dropdown js-dropdown">
+                                    <div class="account-dropdown__body">
+                                        <div class="account-dropdown__item">
+                                            <a href="/dash10/signup/">
+                                                <i class="zmdi zmdi-account"></i>Sign Up</a>
+                                        </div>
+                                        <div class="account-dropdown__item">
+                                            <a href="/dash10/signin/">
+                                                <i class="zmdi zmdi-account"></i>Sign In</a>
+                                        </div>
+                                    </div>
+                                    <!--<div class="account-dropdown__footer">
+                                        <a href="#">
+                                            <i class="zmdi zmdi-power"></i>Logout</a>
+                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-------------- /HEADER DESKTOP  ------------->
+
+
+    <!--------------  BODY  ------------------->
+   {% block body %}
+   {% endblock %}
+   <!---------------  END BODY  ------------------>
+
+
+</div>
+
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+
+
+
+<!-- Bootstrap JS-->
+<script src="{% static 'vendor/bootstrap-4.1/popper.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap-4.1/bootstrap.min.js' %}"></script>
+
+
+
+<!------- Vendor JS   ----->
+<script src="{% static 'vendor/slick/slick.min.js' %}">
+</script>
+<script src="{% static 'vendor/wow/wow.min.js' %}"></script>
+<script src="{% static 'vendor/animsition/animsition.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap-progressbar/bootstrap-progressbar.min.js' %}">
+</script>
+<script src="{% static 'vendor/counter-up/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'vendor/counter-up/jquery.counterup.min.js' %}">
+</script>
+<script src="{% static 'vendor/circle-progress/circle-progress.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'vendor/chartjs/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/select2/select2.min.js' %}">
+</script>
+<script type="text/javascript" src="{% static 'dash10/slick/slick.min.js' %}"></script>
+
+
+
+<!-- Main JS-->
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/index.js' %}"></script>
+</body>
+
+</html>
+<!-- end document-->

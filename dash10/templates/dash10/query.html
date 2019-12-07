@@ -1,0 +1,249 @@
+{% extends 'dash10/homebase.html' %}
+{% load staticfiles %}
+
+
+{% block username %}
+{{ username }}
+{% endblock %}
+
+{% block extstyle %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+
+{% block sidebar %}
+<!---------------- MENU SIDEBAR------------------->
+
+<aside class="menu-sidebar d-none d-md-block" style="opacity: 1;width: 14%;overflow-y: hidden; overflow-x: hidden;background-color: #3B5998;">
+    <div class="logo text-white" style="border-bottom : 1px solid #fff;opacity: 1;padding : 0px;background-color: #3B5998;">
+        <a href="/dash10/" class="col-md-7">
+            <h3 class="text-white col-md-8" style="padding-left: 0px;">DashDesk</h3>
+        </a>
+         <a href=""><i class="fas fa-long-arrow-alt-left col-md-2" style="font-size: 32px;padding-left: 0px;"></i></a>
+         <a href=""><i class="fas fa-long-arrow-alt-right col-md-2" style="font-size: 32px;"></i></a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1" style="opacity: 1;border-right: 1px solid #fff;">
+        <div class="card" style="border : none;background-color: #3B5998;">
+            <div class="card-body text-white" style="padding-top: 10px;">
+                <form action="" method="post" novalidate="novalidate">
+                    {% csrf_token %}
+                    <div class="row form-group" style="border-bottom : 1px solid #fff;padding-bottom: 10px;">
+                        <div class="col-md-4">
+                            <label for="select" class=" form-control-label" style="font-size:14px;">Database</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="select" id="select" class="form-control-sm text-white" style="background-color: #3B5998;">
+                                <option value="1">DashDesk</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="row col-md-12">
+                            <label id="tablelabel" for="select" class=" form-control-label col-md-12">Select Table</label>
+                            <a href="/dash10/dbs/" id="resetbtn" class="btn btn-secondary btn-block col-md-5" style="padding:0px;border-radius: 30px;height:30px;padding-top:2px;">Reset</a>
+                        </div>
+                        <nav class="navbar-sidebar" style="padding: 10px;padding-top: 20px;margin-bottom: 20px;">
+                            <ul class="list-unstyled text-white">
+                                {% for table in tables %}
+                                    <li class="has-sub">
+                                        <a class="js-arrow" href="#" onclick="getcolumns('{{ table }}')"><i class='fas fa-table' style='margin-right:5px;'></i>{{table}}</a>
+                                        <ul id="{{ table }}" class="list-unstyled js-sub-list text-white ml-4">
+
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    </div>
+                    <nav class="navbar-sidebar" style="padding-top: 20px;margin-bottom: 20px;">
+                        <ul class="list-unstyled navbar__list" id="cities1">
+                        </ul>
+                    </nav>
+                </form>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+<!---------------------   END MENU SIDEBAR -------------->
+
+
+<!--border-bottom: 1px solid #fff-->
+
+<!----------------------  BLOCK BODY --------------->
+{% block body %}
+<div class="container-fluid page-wrapper" style="height: 937px;overflow-y: hidden;">
+    <!-- MAIN CONTENT-->
+    <div class="row pt-5 mr-3 mt-3">
+        <div style="display: inline-block;width: 100%;">
+            <div class="au-card recent-report col-lg-12 mb-3 mt-4 text-white" style="height: 870px;opacity: 1;margin: 0px;padding : 10px;border-right: 1px solid #3B5998;padding-left: 0px;padding-right: 0px;">
+                <div class="row pb-2 pl-1" style="margin-bottom: 0px;">
+                    <div class="col-md-12">
+                        <button class="mybtn" style="padding : 4px 15px;border-radius: 5px;" onclick="document.getElementById('tablehead').innerHTML = '';document.getElementById('tablebody').innerHTML = '';">
+                            <i class="fas fa-sync-alt"></i>&nbsp;&nbsp;Refresh</button>
+                        <button data-toggle="modal" data-target="#viewsqlindatamodel" class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;View SQL</button>
+                        <button data-toggle="modal" data-target="#customsql" class="mybtn" style="padding : 4px 15px;border-radius: 5px;">
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;Custom SQL</button>
+                        <a href="/dash10/dbs/" class="mybtn" style="padding : 4px 15px;border-radius: 5px;" >
+                            <i class="fas fa-save"></i>&nbsp;&nbsp;Visualize</a>
+                        <!--<div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+                            <select class="form-control-sm text-white" name="type" style="background-color: #3B5998;">
+                                <option selected="selected">Export</option>
+                                <option value="">CSV</option>
+                                <option value="">SQL</option>
+                            </select>
+                            <div class="dropDownSelect2"></div>
+                        </div>-->
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row" style="border-top: 1px solid #3B5998;"></div>
+                    </div>
+                    <div class="col-md-3 text-center" style="font-size: 25px;position: relative; bottom: 20px;color: #3B5998;"><b>Drop Columns Area</b></div>
+                     <div class="col-md-5">
+                        <div class="row" style="border-top: 1px solid #3B5998;"></div>
+                    </div>
+                </div>
+
+                <div class="row droparea" style="height: 25%;">
+                    <div class="row dropcolumnsarea pl-4" id="dropcolumnsarea" ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;width:90%;">
+
+                    </div>
+
+                </div>
+
+                <div class="row" style="height: 25px;">
+                    <div class="col-md-4">
+                        <div class="row" style="border-top: 1px solid #3B5998;"></div>
+                    </div>
+                    <div class="col-md-3 text-center" style="font-size: 25px;position: relative; bottom: 20px;color: #3B5998;"><b>Query Filters</b></div>
+                     <div class="col-md-5">
+                        <div class="row" style="border-top: 1px solid #3B5998;"></div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 text-center" style="height: 20%;">
+<!--                    <div class="card-title" style="font-size: 25px;"><b>Query Filters</b></div>-->
+                    <form id="queryform" style="height: auto;">
+                        {% csrf_token %}
+                        <div id="querytablejoinarea" class="row form-group mb-2" ondrop="dropqueryfilter(event)" ondragover="allowDrop(event)" style="height: 100px; overflow-x: auto;overflow-y: hidden;">
+
+                        </div>
+
+<!--                    <div class='col-2 bg-secondary mx-3 my-1' style='border: 1px solid #fff;'>-->
+<!--                        <div class='form-group '>-->
+<!--                            <label for='hostname' class=' form-control-label text-white my-1' style='opacity: 1;'>bfsbbfs</label>-->
+<!--                            <div class="row">-->
+<!--                                <div class='col-12 col-md-6'>-->
+<!--                                    <select name='dbtype' id='select' class='form-control text-white'>-->
+<!--                                        <option value="0">Please select</option>-->
+<!--                                        <option value="mysql">MySQL</option>-->
+<!--                                        <option value="oracle">Oracle</option>-->
+<!--                                        <option value="excel">Excel</option>-->
+<!--                                        <option value="hive">Hive</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div class='col-12 col-md-6'>-->
+<!--                                    <input type='text' id='hostname' name='host' placeholder='Value' class='form-control text-white'>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    </form>
+
+                </div>
+
+<!--                <div class="row joinarea" style="height: 28%;border-bottom: 1px solid #fff;">-->
+<!--                    <div id="tablejoinarea" class="row col-md-12 tablejoinarea">-->
+
+<!--                    </div>-->
+<!--                    <div class="viewbtn" style="display: inline-block;width: 9%;">-->
+<!--                        <center><button onclick="tableplottinghelper(tables,headers,1)" class="btn-secondary mt-3" style="padding : 4px 15px;border-radius: 5px;">-->
+<!--                            <i class="fas fa-eye"></i>&nbsp;&nbsp;View</button></center>-->
+<!--                    </div>-->
+<!--                </div>-->
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row" style="border-top: 1px solid #3B5998;"></div>
+                    </div>
+                    <div class="col-md-3 text-center" style="position: relative; bottom: 20px;color: #3B5998;"><b class="mr-3" style="font-size: 25px;">Grid View</b>
+                        <button type="button"  onclick="queryfilteradd('{{reportname}}')" class="mybtn" style="padding : 4px 15px;border-radius: 5px;font-size: 17px;">
+                            <i class="fas fa-eye"></i>&nbsp;&nbsp;Execute</button></div>
+
+                     <div class="col-md-5">
+                        <div class="row" style="border-top: 1px solid #3B5998;"></div>
+                    </div>
+                </div>
+                <div class="tabledisplay" style="height: 36%;border-bottom: 1px solid #3B5998;">
+                    <div class="table-responsive m-b-30" style="height: 100%;">
+                        <table class="table sortable" style="overflow-y: scroll;height: 59%;overflow-x: scroll;width: 100%;">
+                            <thead id="tablehead" class="">
+                            </thead>
+                            <tbody id="tablebody" class="" style="height:100%;overflow-y: scroll;">
+                            </tbody>
+                        </table>
+                   </div>
+                </div>
+
+<!--                <div class="filtersarea" style="height:24%;">-->
+<!--                    <div class="row mt-3 pl-3">-->
+<!--                        <div class="row col-md-3 form-group">-->
+<!--                            <div class="col col-md-12">-->
+<!--                                <label for="select" class=" form-control-label">Order by</label>-->
+<!--                            </div>-->
+<!--                            <br>-->
+<!--                            <div class="col-12 col-md-8">-->
+<!--                                <select name="select" id="orderby" class="form-control-sm text-white" onchange="mainfilters()">-->
+<!--                                    <option value="0">Please select</option>-->
+
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 col-md-4">-->
+<!--                                <select name="select" id="orderbyorder" class="form-control-sm text-white" onchange="mainfilters()">-->
+<!--                                    <option value="ASC">ASC</option>-->
+<!--                                    <option value="DESC">DESC</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row col-md-2 form-group">-->
+<!--                            <div class="col col-md-12">-->
+<!--                                <label for="select" class=" form-control-label">Group by</label>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 col-md-10">-->
+<!--                                <select name="select" id="groupby" class="form-control-sm text-white" onchange="mainfilters()">-->
+<!--                                    <option value="0">Please select</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row col-md-2 form-group">-->
+<!--                            <div class="col col-md-12">-->
+<!--                                <label for="text-input" class=" form-control-label">Top</label>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 col-md-8">-->
+<!--                                <input type="text" id="limit" name="text-input" placeholder="100" class="form-control-sm form-control input-sm text-white" onchange="mainfilters()">-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+
+
+            </div>
+        </div>
+     <br><br>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <p>Copyright © 2019 DashDesk. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT-->
+</div>
+{% endblock %}
